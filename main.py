@@ -1,5 +1,5 @@
 import pygame
-from src.objs import player                     # This imports the player and item modules from the src.objs package.
+from objs import creature                     # This imports the player and item modules from the src.objs package.
 from src.objs import item                       # This imports the player and item modules from the src.objs package.
 from src.utils import damage_calc               # This imports the damage_calc module from the src.utils package
 
