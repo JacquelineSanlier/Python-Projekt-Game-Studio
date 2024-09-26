@@ -21,5 +21,5 @@ RPG
 -> 	Grafisches UI für Herzen,HP / etc.
 ->  Textbasiertes Inventar
 
-	Anfangs level handgemacht, danach eventuell procedually generated
-	Erstmal keine NPC’s oder Quests
+->  Anfangs level handgemacht, danach eventuell procedually generated
+->  Erstmal keine NPC’s oder Quests
