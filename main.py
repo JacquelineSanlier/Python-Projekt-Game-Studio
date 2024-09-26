@@ -1,9 +1,8 @@
 import pygame
 from src import player
 from src.utils import damage_calc
+from src.objs import item
 
 if __name__ == "__main__":
-    pass
-
-print("Hello World - a ")
-print("2. Test")
+    basE_item_test = item.ItemBase(1,1,"Test")
+    print (basE_item_test)

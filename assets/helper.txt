@@ -1,0 +1,2 @@
+items.json hält später die item informationen für basis-itemtypen die dann geladen werden können, 
+stat boosts und upgrade level die random generiert werden sollten dann serialized werden
