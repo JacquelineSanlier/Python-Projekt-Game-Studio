@@ -7,7 +7,7 @@ class ItemBase:
     _upgrade_level: int #for upgrade system, might change
     _stat_bonus: list #should be fed as (stat, bonus) lists in list , as in (strength, 2)
 
-    def __init__(self, _new_id, _rarity, _name, _load_data):
+    def __init__(self, _new_id, _rarity, _name, _load_data=None):
         #ID is absolutely required for saving the item, mirror in item.JSON, init inherits down
         if not _new_id:
             raise ValueError("Needs ID or can not initialize item!")
@@ -27,6 +27,8 @@ class ItemBase:
 
         #If we are loading a serialized item pass in the load data (Serialized)
         #Add deserialization when we have serialization
+        if _load_data:
+            pass
 
 class Weapon(ItemBase):
     _damage: float
