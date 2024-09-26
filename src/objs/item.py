@@ -8,23 +8,12 @@ class ItemBase:
     _upgrade_level: int #for upgrade system, might change
     _stat_bonus: list #should be fed as (stat, bonus) lists in list , as in (strength, 2)
 
-    def __init__(self, _new_id, _rarity_init, _name_init, _load_data=None):
+    def __init__(self, _new_id, _rarity_init = 0, _name_init = "Item", _load_data=None):
         #ID is absolutely required for saving the item, mirror in item.JSON, init inherits down
         if not _new_id:
             raise ValueError("Needs ID or can not initialize item!")
         #needs loading from ID later        
         self._id = _new_id
-
-        #default rest if not available - Replace with loading code later
-        if _rarity_init:
-            self._rarity = _rarity_init
-        else:
-            _rarity_init = 0
-
-        if _name_init:
-            self._name = _name_init
-        else:
-            self._name = "Item"
 
         #If we are loading a serialized item pass in the load data (Serialized)
         #Add deserialization when we have serialization
@@ -32,7 +21,7 @@ class ItemBase:
         self._item_type = 0
 
         if self._item_type == 0:
-            self.load_data()
+            self.load_data_weapon()
 
 
 
@@ -42,16 +31,19 @@ class Weapon(ItemBase):
     _crit_chance: float #in %
     _crit_multi: float #as multiplier
 
-    def load_data(self):
+    def load_data_weapon(self):
         pass
 
 class Armor(ItemBase):
     _armour: float #as damage reduction % e.g. 0.25 = 25%
     _armour_type: int #0 for heavy, 1 for medium , 2 for light
 
-    def load_data():
+    def load_data_armor(self):
         pass
 
 class OffHand(ItemBase):
     _offhand_armour: float #additional damage reistance as percent float, eg 0.25 = 25%
     _offhand_damage_mult: float #damage multiplier as multiplier e.g. 1.10 = 10% more
+
+    def load_data_offfhand(self):
+        pass
