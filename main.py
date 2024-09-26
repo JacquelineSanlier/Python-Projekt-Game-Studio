@@ -1,5 +1,6 @@
 import pygame
 from src import player
+from src.utils import damage_calc
 
 if __name__ == "__main__":
     pass
