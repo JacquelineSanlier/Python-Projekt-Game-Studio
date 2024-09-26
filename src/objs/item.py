@@ -2,7 +2,6 @@
 class ItemBase:
     _id: int #Item reference id for items.json
     _rarity: int #raritys tbd
-    _item_type: int # item type (0 armor, 1 mainhand, 2 offhand)
     _name: str #important
     _weight: float #might go unused will see
     _upgrade_level: int #for upgrade system, might change
@@ -14,14 +13,6 @@ class ItemBase:
             raise ValueError("Needs ID or can not initialize item!")
         #needs loading from ID later        
         self._id = _new_id
-
-        #If we are loading a serialized item pass in the load data (Serialized)
-        #Add deserialization when we have serialization
-
-        self._item_type = 0
-
-        if self._item_type == 0:
-            self.load_data_weapon()
 
 
 
