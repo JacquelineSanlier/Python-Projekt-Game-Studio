@@ -1,3 +1,5 @@
+# honestly, still no idea what im doing
+
 class DamageCalc:
     def __init__(self, _attacker, _defender):
         self._attacker = _attacker  # Attacker can be Player or CreatureBase
