@@ -1,0 +1,1 @@
+Hier gehören wiederverwendete und wiederverwendbare Utils hin , zum beispiel generatoren und calulatoren - nicht spiellogik

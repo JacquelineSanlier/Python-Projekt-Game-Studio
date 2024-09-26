@@ -1,6 +1,5 @@
 import pygame
-from config import *
-from sprites import Player
+from src import player
 
 if __name__ == "__main__":
     pass
