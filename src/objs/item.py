@@ -14,13 +14,13 @@ class ItemBase:
         #needs loading from ID later        
         self._id = _new_id
 
-        #default rest if not available
-        if not self._rarity:
+        #default rest if not available - Replace with loading code later
+        if _rarity:
             self._rarity = _rarity
         else:
             _rarity = 0
 
-        if not self._name:
+        if _name:
             self._name = _name
         else:
             self._name = "Item"
