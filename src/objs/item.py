@@ -14,8 +14,6 @@ class ItemBase:
         #needs loading from ID later        
         self._id = _new_id
 
-
-
 class Weapon(ItemBase):
     _damage: float
     _damage_type: int #0 for physical, 1 for magical
