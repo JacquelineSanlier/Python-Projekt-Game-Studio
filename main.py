@@ -3,7 +3,7 @@ import pygame
 #from src.objs import item                       # This imports the player and item modules from the src.objs package.
 #from src.utils import damage_calc               # This imports the damage_calc module from the src.utils package
 from src.utils.player_controller import Player, Controller         # This imports the player_controller module from src.utils package 
-from src.utils.ui import WindowBase
+from src.utils.ui import WindowBase, TextBase
 
 pygame.init()
 
@@ -17,6 +17,7 @@ pygame.display.flip()
 #test ui window
 window = WindowBase(1, display, 100, 10, int(width/2), int(height*0.05), True)
 window2 = WindowBase(1, display, 100, 10, int(width/2), int(height*0.95), True)
+texttest = TextBase(1,"Hallo Welt", display, 20, int(height*0.95), 3)
 window._color = "black"
 window2._color = "black"
 
@@ -54,6 +55,7 @@ while is_running:
     #render ui after player logic always
     window.update()
     window2.update()
+    texttest.update()
 
     # refresh screen
     pygame.display.flip()

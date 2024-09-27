@@ -1,5 +1,10 @@
 import pygame
 
+pygame.font.init()
+fontsmall = pygame.font.SysFont("monospace", 15)
+fontmid = pygame.font.SysFont("monospace", 25)
+fontbig = pygame.font.SysFont("monospace", 35)
+
 class WindowBase: #used for any window that can have subwindows and segments
     _id: int
     _width: int
@@ -40,3 +45,35 @@ class WindowBase: #used for any window that can have subwindows and segments
 
     def close(self): #destroys the window
         del self
+
+class TextBase:
+    _id: int
+    _text: str
+    _parent: pygame.Surface
+    _x: int
+    _y: int
+    _fontsize: int #1 2 or 3
+
+    def __init__(self , _id:int , _text: str, _parent: pygame.Surface, _pox_x: int, _pos_y: int, _fontsize = 1):
+        self._id = _id
+        self._text = _text
+        self._parent = _parent
+        self._x = _pox_x
+        self._y = _pos_y
+        self._fontsize = _fontsize
+
+    def update(self, _text_new = ""):
+
+        if _text_new != self._text and _text_new != "":
+            self._text = _text_new
+
+        match self._fontsize:
+            case 1:
+                font = fontsmall
+            case 2:
+                font = fontmid
+            case 3:
+                font = fontbig
+
+        render_text = font.render(self._text, 1, (255,255,255))
+        self._parent.blit(render_text, (self._x, self._y))
