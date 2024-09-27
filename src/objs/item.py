@@ -7,7 +7,6 @@ class ItemBase:
     _equpped: bool #whether or not the item is currently equipped
 
     #base bonus and weight for random additions
-    #total stat wieghts should add up to 10, 
 
     #primary melee stat ID 1
     _stat_str_base: int
@@ -36,8 +35,18 @@ class ItemBase:
         #needs loading from ID later        
         self._id = _new_id
 
+        self._stat_str_weight = 0
+        self._stat_dex_weight = 0
+        self._stat_con_weight = 0
+        self._stat_int_weight = 0
+        self._stat_wis_weight = 0
+
+    #quick get for total weights
+    def get_weight_total(self) -> int:
+        return self._stat_str_weight + self._stat_dex_weight + self._stat_con_weight + self._stat_wis_weight + self._stat_int_weight
+
     #takes a result from randomization and returns the id for the stat that resulted
-    def boost_by_weight(self, _result: int) -> int:
+    def get_statid_by_weight(self, _result: int) -> int:
 
         #ex a roll result of 2 for a sword with 5 0 5 weihting should add str
         #for the above _str_raange start will be 0, and _con_range_start will be 5
@@ -46,6 +55,7 @@ class ItemBase:
         _con_range_start = _dex_range_start + self._stat_dex_weight
         _wis_range_start = _con_range_start + self._stat_con_weight
         _int_range_start = _wis_range_start + self._stat_wis_weight
+        _total = _int_range_start + self._stat_int_weight
         
         if _result in range(_str_range_start, _dex_range_start) :
             return 1 # id for str
@@ -53,9 +63,9 @@ class ItemBase:
             return 2 # id for dex
         if _result in range(_con_range_start, _wis_range_start) :
             return 3 # id for con
-        if _result in range(_str_range_start, _dex_range_start) :
+        if _result in range(_wis_range_start, _int_range_start) :
             return 4 # id for wis
-        if _result in range(_str_range_start, _dex_range_start) :
+        if _result in range(_int_range_start, _total) :
             return 5 # id for int
         
         return 0 #could not parse weight
