@@ -54,6 +54,7 @@ class TextBase:
     _y: int
     _fontsize: int #1 2 or 3
 
+    #takes id , the text to display, the parent window which should always be our main, x and Y pos ,as well as a font size between 1 and 3
     def __init__(self , _id:int , _text: str, _parent: pygame.Surface, _pox_x: int, _pos_y: int, _fontsize = 1):
         self._id = _id
         self._text = _text
@@ -62,6 +63,7 @@ class TextBase:
         self._y = _pos_y
         self._fontsize = _fontsize
 
+    #takes new text to update the text display
     def update(self, _text_new = ""):
 
         if _text_new != self._text and _text_new != "":
