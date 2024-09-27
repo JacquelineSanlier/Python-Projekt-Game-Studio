@@ -1,3 +1,5 @@
 *.pyc
 temp_*.py
 test_*.py
+*.bak
+*.sav
