@@ -9,23 +9,23 @@ class ItemBase:
     #base bonus and weight for random additions
     #total stat wieghts should add up to 10, 
 
-    #primary melee stat
+    #primary melee stat ID 1
     _stat_str_base: int
     _stat_str_weight: int
 
-    #primary physical ranged
+    #primary physical ranged ID 2
     _stat_dex_base: int
     _stat_dex_weight: int
 
-    #primary health stat
+    #primary health stat ID 3
     _stat_con_base: int
     _stat_con_weight: int
 
-    #primary healing stat (and mana)
+    #primary healing stat (and mana) ID 4
     _stat_wis_base: int
     _stat_wis_weight: int
 
-    #primary magic ranged
+    #primary magic ranged (and mana) ID 5
     _stat_int_base: int
     _stat_int_weight: int
 
@@ -35,6 +35,31 @@ class ItemBase:
             raise ValueError("Needs ID or can not initialize item!")
         #needs loading from ID later        
         self._id = _new_id
+
+    #takes a result from randomization and returns the id for the stat that resulted
+    def boost_by_weight(self, _result: int) -> int:
+
+        #ex a roll result of 2 for a sword with 5 0 5 weihting should add str
+        #for the above _str_raange start will be 0, and _con_range_start will be 5
+        _str_range_start = 0
+        _dex_range_start = self._stat_str_weight
+        _con_range_start = _dex_range_start + self._stat_dex_weight
+        _wis_range_start = _con_range_start + self._stat_con_weight
+        _int_range_start = _wis_range_start + self._stat_wis_weight
+        
+        if _result in range(_str_range_start, _dex_range_start) :
+            return 1 # id for str
+        if _result in range(_dex_range_start, _con_range_start) :
+            return 2 # id for dex
+        if _result in range(_con_range_start, _wis_range_start) :
+            return 3 # id for con
+        if _result in range(_str_range_start, _dex_range_start) :
+            return 4 # id for wis
+        if _result in range(_str_range_start, _dex_range_start) :
+            return 5 # id for int
+        
+        return 0 #could not parse weight
+
 
 class Weapon(ItemBase):
     _damage: float
