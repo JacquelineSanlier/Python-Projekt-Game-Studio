@@ -15,8 +15,10 @@ display = pygame.display.set_mode((width, height))
 pygame.display.flip()
 
 #test ui window
-window = WindowBase(1, display, 100, 10, int(width/2), int(height*0.95), True)
+window = WindowBase(1, display, 100, 10, int(width/2), int(height*0.05), True)
+window2 = WindowBase(1, display, 100, 10, int(width/2), int(height*0.95), True)
 window._color = "black"
+window2._color = "black"
 
 # fps and clock generator
 clock = pygame.time.Clock()
@@ -51,6 +53,7 @@ while is_running:
 
     #render ui after player logic always
     window.update()
+    window2.update()
 
     # refresh screen
     pygame.display.flip()
