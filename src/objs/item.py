@@ -3,10 +3,31 @@ class ItemBase:
     _id: int #Item reference id for items.json
     _rarity: int #raritys tbd
     _name: str #important
-    _weight: float #might go unused will see
     _upgrade_level: int #for upgrade system, might change
-    _stat_bonus: list #should be fed as (stat, bonus) lists in list , as in (strength, 2)
     _equpped: bool #whether or not the item is currently equipped
+
+    #base bonus and weight for random additions
+    #total stat wieghts should add up to 10, 
+
+    #primary melee stat
+    _stat_str_base: int
+    _stat_str_weight: int
+
+    #primary physical ranged
+    _stat_dex_base: int
+    _stat_dex_weight: int
+
+    #primary health stat
+    _stat_con_base: int
+    _stat_con_weight: int
+
+    #primary healing stat (and mana)
+    _stat_wis_base: int
+    _stat_wis_weight: int
+
+    #primary magic ranged
+    _stat_int_base: int
+    _stat_int_weight: int
 
     def __init__(self, _new_id, _rarity_init = 0, _name_init = "Item", _load_data=None):
         #ID is absolutely required for saving the item, mirror in item.JSON, init inherits down
