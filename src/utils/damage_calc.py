@@ -25,7 +25,7 @@ def calculate_damage(attacker : CreatureBase, defender : CreatureBase):
     combat_font = pygame.font.SysFont('Comic Sans MS', 25)                  # initialize font for combat text
 
     # red text for visibility, and its cool
-    text_surface = combat_font.render(f'{attacker._name} did {final_damage} damage to {defender._name}, and has {defender._health} health left! ', False, (255, 0, 0))
+    text_surface = combat_font.render(f'{attacker._name} did {final_damage} damage to {defender._name}, {defender._name} has {defender._health} health left! ', False, (255, 0, 0))
     # Get the size of the text surface
 
     # Blit the text surface onto the main screen surface at the center position
