@@ -8,6 +8,65 @@
 # dieing, jumping, falling, landing, walking 
 # 
 # import os
+# 1. Step:
+# Load all Files in one array
+# unique_entities=[
+#    tiles.tile_item(pygame,1,"Tree",'./assets/svg/tree.svg'),
+#    tiles.tile_item(pygame,2,"Road",'./assets/svg/road.svg'),
+#    tiles.tile_item(pygame,3,"Hill",'./assets/svg/hill.svg')
+# ]
+#
+# 2. Step Build up your Map
+#   At the momenent there is no Class for the List, I wil create one
+#   u=tiles.screen_tile(pygame,screen,5,tree,unique_entities[0])
+#   u.setPosition(300,200)
+#   u.setSize(200,200)
+#   u.setHitbox(20,34,160,156)
+#   main_entity.append(u)
+#
+# Late i will create a Json Array for entieies and you can get it by Name
+# unique_entities=[
+#    "tree":tiles.tile_item(pygame,1,"Tree",'./assets/svg/tree.svg'),
+#    "road":tiles.tile_item(pygame,2,"Tree",'./assets/svg/road.svg'),
+# ]
+# and then have the Option
+# level1=tile_list(pygame,screen)
+# level1.add("tree",x,y,width,height,hit_x,hit_y,_hit_width,hit_height)
+#   hitbox entries are not required
+# or with 2 Parameters
+# level1.add("tree",dictionary_item)
+# or with
+# level1.add("tree",full_dictionary)
+#
+# so it will be easy to create a map
+
+import tiles
+
+class tile_list:
+    _pygame=None #Pygame 
+    _item_list={}
+    _max_id=0
+    
+
+    def __init__(self,pygame):
+        self._pygame=pygame
+
+    def add(self,name,src,width=None,height=None,hit_x=0,hit_y=0,hit_width=None,hit_height=None):
+        self._max_id+=1   
+        self._item_list[name]= tiles.tile_item(self._pygame,self._max_id,name,src)
+        self._item_list[name].setSize(width,height)
+        self._item_list[name].setHitbox(hit_x,hit_y,hit_width,hit_height)
+        return
+
+    def addItems(self,items):
+        for item in items:
+            #        name    src     x       y       Hit_x   Hit_y   Hit_w   Hit_h
+            self.add(item[0],item[1],item[2],item[3],item[4],item[5],item[6],item[7])
+    
+    def getItem(self,name):
+        return self._item_list[name]
+            
+
 
 class tile_item:
     _id:int=0        # id 
@@ -15,6 +74,14 @@ class tile_item:
     _name:str =""    # name caan be found by Name  
     _image = None     # 
 
+    _width:int = 0            #Width 
+    _height:int = 0           #Height
+    
+    _hitbox_x:int = 0                #Collision Position relative to Image start X
+    _hitbox_y:int = 0                #Collision Position relative to image start Y
+    _hitbox_width:int = 0            #Collision Width 
+    _hitbox_height:int = 0           #Collision Height
+    
     #
     # Initialise and give 
     #
@@ -24,14 +91,49 @@ class tile_item:
         self._src   = src
         self._image = self.__load(pygame,src)
 
+    
+
     def __load(self,pygame,src):
         #pygame.image.load(os.path.join('data', src))
         return pygame.image.load(src)
 
     def getImage(self):
         return self._image 
+    
+    def setHitbox(self,x=0,y=0,width=None,height=None):
+        self._hitbox_x=x                #Collision Position relative to Image start X
+        self._hitbox_y=y                #Collision Position relative to image start Y
+        if (width !=None):
+            self._hitbox_width=width
+        else:
+            self._hitbox_width=self._width
+        if (height !=None):
+            self._hitbox_height=height
+        else:
+            self._hitbox_height=self._height
 
-	
+    def setSize(self,width=None,height=None):
+        w,h = self._image.get_size()
+        if (width != None):
+            self._width=width  
+        else:
+            self._width=w
+        if (height !=None):
+            self._height:height
+        else:
+            self._height=h
+
+    
+
+
+    
+
+
+
+class screen_list:
+    pass
+
+
 # Tile = Item auf dem Bildschirm , Entity = Interagierendes Item
 # you can resiz
 # you can move
@@ -150,20 +252,15 @@ class screen_tile:
         self._pygame.draw.rect(screen,self.__RED,(x,y,w,h),2)
 
     def _draw_image(self):
-        # print(self._tile._name)
-        # screen=self._screen
-        #image=self._pygame.image.load('./assets/svg/tree.svg'); 
-        #image=self._pygame.image.load('./assets/svg/tree.svg'); 
-
-
-        # image=self._tile.getImage()
         x=self._x * self._scale
         y=self._y * self._scale
         w=self._width
         h=self._height
+        if (self._tile._image == None):
+            return
+        
         image=self._tile._image
         image=self._pygame.transform.scale(image, (w, h))
-        #pygame.transform.rotate()
         #rotated_image = pygame.transform.rotate(image, 45)
         screen=self._screen
         screen.blit(image, (x, y)) 
@@ -176,6 +273,8 @@ class screen_tile:
         self._draw_rect()
         self._draw_hitbox()
 
+    def getX(self):
+        return self._x
 
 		
 
