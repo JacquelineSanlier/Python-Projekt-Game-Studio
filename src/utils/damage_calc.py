@@ -1,44 +1,32 @@
-# honestly, still no idea what im doing
+import pygame.font
 
-class DamageCalc:
-    def __init__(self, _attacker, _defender):
-        self._attacker = _attacker  # Attacker can be Player or CreatureBase
-        self._defender = _defender  # Defender can be Player or CreatureBase
+# very basic damage calc, just health - damage for now
 
-    def _calculate_attack_power(self):
-        """Calculates the attack power based on the attacker."""
-        if self._attacker._id == 0:  # If the attacker is the Player
-            attack_power = self._attacker._attack_power
-            if self._attacker.main_hand and self._attacker.main_hand._equipped:
-                attack_power += self._attacker.main_hand._damage
-        else:  # For creatures
-            attack_power = self._attacker._attack_power
-        return attack_power
+from src.objs.creature import CreatureBase
 
-    def _calculate_defense(self):
-        """Calculates the defense value of the defender."""
+def calculate_damage(attacker : CreatureBase, defender : CreatureBase):
+    start_time = pygame.time.get_ticks()
+    if not hasattr(defender, '_armor'):                                 # check for defender armor
+        defender._armor = 0
+    hp = defender._health + defender._armor
 
-        defense = 0
-        # Check if the defender is the player
-        if self._defender._id == 0:
-            # If the player has armor and it's equipped, add armor defense
-            if hasattr(self._defender, 'armor') and self._defender.armor and self._defender.armor._equipped:
-                defense += self._defender.armor._armour  # Add armor defense if equipped
-        # For creatures, defense remains 0 by default
-        return defense
+    if not hasattr(attacker, '_item'):                                 # maybe later
+        additional_damaage = 0
+    else:
+        additional_damaage += attacker._item._damage
+    
+    damage = attacker._attack_power + additional_damaage
 
-    def calculate_damage(self):
-        """Calculates and returns the damage done and the defender's remaining health."""
-        attack_power = self._calculate_attack_power()  # Get the attack power
-        defense = self._calculate_defense()  # Get the defense value
+    defender._health = hp - damage                        # set defender health / damage done
 
-        # Calculate the final damage dealt
-        final_damage = max(0, attack_power - defense)  # Ensure damage is not negative
-        
-        # Update defender's health
-        self._defender._health = max(0, self._defender._health - final_damage)  # Prevent health from going negative
+    final_damage = hp - defender._health
 
-        print(f'Attack Power: {attack_power}, Defense: {defense}, Damage Done: {final_damage}')
+    pygame.font.init()                                                  # initialize for combat text
+    combat_font = pygame.font.SysFont('Comic Sans MS', 25)                  # initialize font for combat text
 
-        # Return final damage dealt and remaining health of the defender
-        return final_damage, self._defender._health
+    # red text for visibility, and its cool
+    text_surface = combat_font.render(f'{attacker._name} did {final_damage} damage to {defender._name}, {defender._name} has {defender._health} health left! ', False, (255, 0, 0))
+    # Get the size of the text surface
+
+    # Blit the text surface onto the main screen surface at the center position
+    return text_surface, start_time

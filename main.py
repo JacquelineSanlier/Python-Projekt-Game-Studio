@@ -1,7 +1,7 @@
 import pygame
-#from objs import creature                     # This imports the player and item modules from the src.objs package.
+from src.objs.creature import CreatureBase                    # This imports the player and item modules from the src.objs package.
 #from src.objs import item                       # This imports the player and item modules from the src.objs package.
-#from src.utils import damage_calc               # This imports the damage_calc module from the src.utils package
+from src.utils.damage_calc import calculate_damage               # This imports the damage_calc module from the src.utils package
 from src.utils.player_controller import Player, Controller         # This imports the player_controller module from src.utils package 
 from src.utils.ui import WindowBase, TextBase
 
@@ -28,18 +28,30 @@ FPS = 60
 # color
 WHITE = (255, 255, 255)
 
+# placeholder Creatures to have something to calculate
+creature_1 = CreatureBase(1, 'Goblin', 30, 3, 50)
+creature_2 = CreatureBase(1, 'Orc', 50, 5, 50)
+
+text_surface = None     # Combat Text placeholder
+start_time = None       # tracking time elapsed (for drawing combat text over x frames)
+
 # create player and controller
 player = Player(400, 300, 5) # player object with start position and speed
 controller = Controller() #controller for input
 
 is_running = True       #This keeps the game window open
 while is_running:
+
+    current_time = pygame.time.get_ticks()      # get time at the start of the loop (for combat text initialization)
+
     for event in pygame.event.get():        #Quit game with x button
         if event.type == pygame.QUIT:
             is_running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 is_running = False
+            if event.key == pygame.K_e:                                              # run combat text once e is pressed / test
+                text_surface, start_time = calculate_damage(creature_1, creature_2)   # creatures are currently dummies
 
     
     # get input
@@ -56,6 +68,10 @@ while is_running:
     window.update()
     window2.update()
     texttest.update()
+
+    # combat text screen
+    if text_surface and start_time and current_time - start_time < 1000:
+        display.blit(text_surface, ((width // 2) - 100, (height // 2) + 200))
 
     # refresh screen
     pygame.display.flip()
