@@ -1,18 +1,20 @@
 import json
 from item import Item
-from creature import Creature
 import requests
 from pathlib import Path
 
 class Editorcontroller:
     def __init__(self):
-        self.itemList:Item=[]
+        self.itemList:Item=[]                                           # list of item class <- redundant
+        self.items:dict=[]                                              # same list as dictionary 
         self.gui=None
         self.itemStructureKnown:bool=False								#can only add new creatures if json struc is known
         self.numberOfRows:int=0
         self.currentIndex:int=0                                             #listpointer
         self.types:str=[]
         self.filename:str=""
+        self.itemsPerRow=30
+        self.itemsColumn=3
     
     def setGui(self,gui):
         self.gui=gui
@@ -52,7 +54,9 @@ class Editorcontroller:
         self.gui.clearScreen()
         self.numberOfRows=0    
         self.initGuiAttribute()       
-        self.gui.enableButtons()        
+        self.gui.enableButtons()  
+        self.getDict()                                              #enable the table in the GUI
+        self.printItemList()                                                    # and print the items there
 
     def saveLocal(self):
         items_data = []
@@ -82,6 +86,9 @@ class Editorcontroller:
         self.currentIndex-=1
         if self.currentIndex<0 : self.currentIndex=len(self.itemList)-1
         self.updateView()
+        self.sortBy("damage")
+        self.printItemList()
+        
     
     def showNext(self):
         self.currentIndex+=1
@@ -146,6 +153,7 @@ class Editorcontroller:
         if len(self.itemList)>0:
             del self.itemList[self.currentIndex]
             self.showPrevious()
+           
 
     def saveChanges(self):
         index:int=0                    # correct data types?
@@ -184,3 +192,36 @@ class Editorcontroller:
     def getType(self):
         if self.filename=="items.json": return ("items")
         elif self.filename=="creatures.json": return("creatures")
+    
+    def getDict(self):     
+        self.items=[]                          
+        for i in self.itemList:
+            dic = {}  
+            for key, value in i.__dict__.items(): 
+                dic[key] = value 
+            self.items.append(dic)
+
+    def sortBy(self,key:str):
+        self.items=sorted(self.items, key=lambda x: x[key])
+        
+
+    def printItemList(self):
+        
+        header:str=[]
+        for i in self.items[0]:
+            header.append(i)
+        self.gui.enableTable(header)
+        zaehler=0
+        for a in self.items:
+            elements = list(a.values())                
+            self.gui.addElements(elements)
+
+    def processClickedItem(self,id:str):
+        for items in range(0,len(self.itemList)):
+            if getattr(self.itemList[items],"id")==int(id):
+                print(id)
+                self.currentIndex=items
+                self.updateView()
+        
+
+

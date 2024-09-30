@@ -14,11 +14,16 @@ class Editorgui:
         self.Editorcontroller=Editorcontroller
         self.root=Tk()
         self.root.title("Item & Creature Editor")
-        self.root.geometry("1024x768")
+        width = self.root.winfo_screenwidth()  
+        height = self.root.winfo_screenheight()
+        self.root.geometry(str(width)+"x"+str(height))
         self.style = ttk.Style()
         self.root.option_add("*Font",('Verdana',12))
 
         self.frameTop = Frame(self.root, bg="lightblue")
+        self.frameTop.pack_propagate(False)                                     # framesize fixed
+        self.frameTop.pack(fill='both', expand=True)
+        self.frameTop.pack()
         self.frameBottom = Frame(self.root)
         self.frameTop.grid(row=0, column=0,  sticky="nsew")                      # divide the view into 2 parts
         self.frameBottom.grid(row=2, column=0, sticky="nsew")
@@ -64,6 +69,8 @@ class Editorgui:
         
         menu.add_cascade(label="About",menu=self.creatureMenu,font=menu_font)       
 
+        self.table=ttk.Treeview()
+
         self.root.config(menu=menu)
         
     
@@ -95,7 +102,6 @@ class Editorgui:
         self.label.append(label)
 
     def updateView(self,key:str,value:str,index:int):
-        #print(self.entrystring[3].get())
         self.label[index].config(text=key)
         if str(self.text[index].cget("state")) == "readonly":
             self.text[index].config(state="normal")
@@ -132,7 +138,35 @@ class Editorgui:
     
     def printStatus(self,msg:str):
         self.statusLabel.config(text=msg)   
+    
+    def enableTable(self,columns:list):
+        self.table.destroy()
+        self.frameTop.update()
+        
+        columnWidth=int(int(self.root.geometry().split('x')[0])/len(columns))                    # tablewidth/ number of columns
+        self.table = ttk.Treeview(self.frameTop, columns=columns, show='headings')
+        scrollbar = ttk.Scrollbar(self.frameTop, orient=VERTICAL, command=self.table.yview)
+        self.table.configure(yscroll=scrollbar.set)
+        scrollbar.grid(row=0, column=1, sticky='e')
+        for col in columns:
+            self.table.heading(col, text=col)
+            self.table.column(col,width=columnWidth)
+        self.table.pack(fill='both', expand=True)                                                   # table fills parent frame
+        self.table.bind("<<TreeviewSelect>>", self.rowSelected)
+    
+    def addElements(self,elements:list):
+        self.table.insert('',END, values=elements)
+        
+    def setHeader(self,key:str):
+        self.table.heading(key, text=key)
+
+    def rowSelected(self,event):
+        item = self.table.focus()           
+        print((self.table.item(item, 'values')[0]))                                                # select line
+        self.Editorcontroller.processClickedItem((self.table.item(item, 'values')[0]))      # and return the 1rst value =id
+
             
     def startGui(self):
         self.root.mainloop()
+    
     
