@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Background grass color -->
+  <rect width="64" height="64" fill="#6CC551" />
+
+  <!-- Grass blades -->
+  <path d="M10 64 Q12 50 8 40 T10 20 Q16 40 14 64 Z" fill="#5BA44B" />
+  <path d="M20 64 Q22 50 18 35 T20 15 Q26 40 24 64 Z" fill="#5BA44B" />
+  <path d="M30 64 Q32 50 28 35 T30 20 Q36 45 34 64 Z" fill="#5BA44B" />
+  <path d="M40 64 Q42 50 38 30 T40 15 Q46 40 44 64 Z" fill="#5BA44B" />
+  <path d="M50 64 Q52 50 48 35 T50 20 Q56 45 54 64 Z" fill="#5BA44B" />
+</svg>
