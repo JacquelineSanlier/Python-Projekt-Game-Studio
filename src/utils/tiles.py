@@ -40,7 +40,7 @@
 #
 # so it will be easy to create a map
 
-import tiles
+# import tiles
 
 class tile_list:
     _pygame=None #Pygame 
@@ -53,7 +53,7 @@ class tile_list:
 
     def add(self,name,src,width=None,height=None,hit_x=0,hit_y=0,hit_width=None,hit_height=None):
         self._max_id+=1   
-        self._item_list[name]= tiles.tile_item(self._pygame,self._max_id,name,src)
+        self._item_list[name]= tile_item(self._pygame,self._max_id,name,src)
         self._item_list[name].setSize(width,height)
         self._item_list[name].setHitbox(hit_x,hit_y,hit_width,hit_height)
         return
@@ -130,8 +130,51 @@ class tile_item:
 
 
 
-class screen_list:
-    pass
+class screen:
+    _pygame=None    #Empty Python container
+    _screen=None    #Screen entity
+    _tile_list={}   #Used Items width changes sizes
+    _clock=None     #Timer
+    _item_list={}   #All unique Items in Original size 
+    _id:int = 0     #unique ID
+
+    def __init__(self,pygame,screen):
+        self._pygame  = pygame
+        self._screen  = screen
+    
+    def setTiles(self,tiles):
+        self._tile_list=tiles
+        #print (tiles.getItem("Tree")._width)
+        #print (self._tile_list.getItem("Tree")._width)
+    
+
+    def add(self,name,x,y,width=None,height=None,hit_x=None,hit_y=None,hit_width=None,hit_height=None,):
+        self._id+=1
+
+        item=screen_tile(self._pygame, self._screen, self._id, self._tile_list.getItem(name))
+        item.setPosition(x,y)
+        if (width and height):
+            item.setSize(width,height)
+        
+        if (hit_x and hit_y and hit_width and hit_height):
+            item.setHitbox(width,height)
+
+        self._item_list[self._id]=item    
+        print (item._width)
+        print (self._item_list[self._id]._width)
+
+        return item
+
+    def getItem(self,index):
+        return self._item_list[index]
+        
+    def update(self):
+        print ("FOR")
+        print(self._item_list[1]._speed)
+        print(vars(self._item_list[1].title_item))
+        for item in self._item_list:
+            print(item._width)
+            #item.update()  
 
 
 # Tile = Item auf dem Bildschirm , Entity = Interagierendes Item
@@ -177,6 +220,9 @@ class screen_tile:
         self._tile=tile
         self._pygame=pygame
         self._screen=screen
+        if (tile):
+            self.setSize(tile._width, tile._height)
+            
 
     def setId(self,id):
         self._id=id
@@ -193,12 +239,36 @@ class screen_tile:
             self._hitbox_y=0
 
     def setSize(self,width,height):
+        w=self._width
+        h=self._height
+
         self._width=width
         self._height=height
         if (self._hitbox_width == None):
             self._hitbox_width=width
         if (self._hitbox_height == None):
             self._hitbox_height=height
+
+        
+        self.resizeHitbox(w,h,width,height)
+
+        #resize Hitbox
+        #self._hitbox_width=self._hitbox_width*width/w
+        #self._hitbox_height=self._hitbox_height*height/h
+        #self._hitbox_x=self._hitbox_x*width/h
+        #self._hitbox_y=self._hitbox_y*height/h
+    
+    #resize Hitbox from w,h to width height
+    def resizeHitbox(self,w,h,width,height):
+        if w == 0 or h == 0:
+            return
+
+        print (w)
+        print (width)
+        self._hitbox_width=self._hitbox_width*width/w
+        self._hitbox_height=self._hitbox_height*height/h
+        self._hitbox_x=self._hitbox_x*width/h
+        self._hitbox_y=self._hitbox_y*height/h
 
     def setHitbox(self,x,y,width,height):
         self._hitbox_x=x
