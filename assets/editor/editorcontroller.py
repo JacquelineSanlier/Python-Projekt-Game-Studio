@@ -13,7 +13,7 @@ class Editorcontroller:
         self.numberOfRows:int=0
         self.currentIndex:int=0                                             #listpointer
         self.types:str=[]
-        self.filename:str=""
+        self.filename:str="items.json"
         self.itemsPerRow=30
         self.itemsColumn=3
         self.reverse=False
@@ -43,9 +43,7 @@ class Editorcontroller:
         self.currentIndex=0
         self.itemList:Item=[]
         self.types=[]
-        filename=self.checkFilename()
-       
-            
+        self.checkFilename()
         
         with open(self.filename, "r") as f:
             json_object = json.load(f)
@@ -85,15 +83,19 @@ class Editorcontroller:
     def pushItemsgithub(self):
         pass
 
-    def showHelp():
-        pass        
+    def showHelp(self):
+        self.checkFilename()
+        try:
+            with open("help.txt","r") as f:
+                text=f.read()            
+        except:
+            text="cant open help.txt"
+        self.gui.showDocument(text)         
 
     def showPrevious(self):
         self.currentIndex-=1
         if self.currentIndex<0 : self.currentIndex=len(self.itemList)-1
-        self.updateView()
-        
-        
+        self.updateView()        
     
     def showNext(self):
         self.currentIndex+=1
@@ -113,11 +115,11 @@ class Editorcontroller:
             self.numberOfRows+=1
         img="img/"+self.getType()+str(self.itemList[0].id)+".png"      # image name =type_id
         if((Path(img)).is_file()):                                      # does image exist?
-            self.gui.showImage(img,self.numberOfRows)
+            self.gui.showImage(img)
         else:
             img="img/noimg.jpeg"
             if((Path(img)).is_file()):
-                self.gui.showImage(img,self.numberOfRows)
+                self.gui.showImage(img)
     
     def updateView(self):
         self.numberOfRows=0
@@ -126,11 +128,11 @@ class Editorcontroller:
             self.numberOfRows+=1
         img="img/"+self.getType()+"_"+str(self.itemList[self.currentIndex].id)+".png"        
         if((Path(img)).is_file()):                                      # does image exist?
-            self.gui.showImage(img,self.numberOfRows)
+            self.gui.showImage(img)
         else:
             img="img/noimg.jpeg"
             if((Path(img)).is_file()): 
-                self.gui.showImage(img,self.numberOfRows)
+                self.gui.showImage(img)
 
     def createNew(self):      
         maxId:int=0
@@ -157,8 +159,7 @@ class Editorcontroller:
     def delete(self):               #cant delete last item)
         if len(self.itemList)>0:
             del self.itemList[self.currentIndex]
-            self.showPrevious()
-           
+            self.showPrevious()           
 
     def saveChanges(self):
         index:int=0                    # correct data types?
@@ -209,15 +210,11 @@ class Editorcontroller:
             self.items.append(dic)
 
     def sortBy(self,key:str):
-        self.reverse=not self.reverse
-        
+        self.reverse=not self.reverse        
         self.items=sorted(self.items, key=lambda x: x[key],reverse=self.reverse)
-        print(key)
-        self.printItemList()
-        
+        self.printItemList()        
 
-    def printItemList(self):
-        
+    def printItemList(self):        
         header:str=[]
         for i in self.items[0]:
             header.append(i)

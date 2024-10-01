@@ -1,0 +1,6 @@
+- Load and save monsters.json and items.json via the File Menu
+-clicking a column sorts it ascending and descending
+-clicking a line opens the item in the editor tab
+-"save changes" in the editor tab saves it internal, not to a file.
+-image name should be items_id.jpg / creatures_id/jpg, where id is the actuall id of the item / creature
+- you have to hit "save changes" before you switch to another item / creature

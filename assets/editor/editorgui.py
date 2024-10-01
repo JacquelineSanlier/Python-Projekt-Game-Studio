@@ -65,10 +65,11 @@ class Editorgui:
         self.itemMenu.add_command(label="Push Items to Github", command=self.Editorcontroller.pushItemsgithub,state="disabled")
         menu.add_cascade(label="File", menu=self.itemMenu)
         self.creatureMenu=Menu(menu,tearoff=0,font=menu_font)
-        self.creatureMenu.add_command(label="Help",command=self.Editorcontroller.showHelp,state="disabled")
+        self.creatureMenu.add_command(label="Help",command=self.Editorcontroller.showHelp,state="normal")
         
         menu.add_cascade(label="About",menu=self.creatureMenu,font=menu_font)       
 
+        self.infoLabel=Label()
         self.table=ttk.Treeview()
 
         self.root.config(menu=menu)
@@ -93,7 +94,7 @@ class Editorgui:
         self.entrystring.append(entry_var)
         self.frameBottom.grid_rowconfigure(index, minsize=20)
     
-    def showImage(self,name:str,numberOfRows):
+    def showImage(self,name:str):
         image = Image.open(name)  
         scaled_image = image.resize((100,100))  
         self.tk_image = ImageTk.PhotoImage(scaled_image)
@@ -141,6 +142,7 @@ class Editorgui:
     
     def enableTable(self,columns:list):
         self.table.destroy()
+        self.infoLabel.destroy()
         self.frameTop.update()
         
         columnWidth=int(int(self.root.geometry().split('x')[0])/len(columns))                    # tablewidth/ number of columns
@@ -165,8 +167,15 @@ class Editorgui:
         print((self.table.item(item, 'values')[0]))                                                # select line
         self.Editorcontroller.processClickedItem((self.table.item(item, 'values')[0]))      # and return the 1rst value =id
 
-            
+    
+    def showDocument(self,text:str):
+        self.table.destroy()        
+        self.infoLabel=Label(self.frameTop,text=text)
+        self.infoLabel.pack()
+
+
     def startGui(self):
         self.root.mainloop()
     
+
     
