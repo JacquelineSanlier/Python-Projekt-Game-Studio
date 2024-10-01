@@ -2,6 +2,7 @@ import json
 from item import Item
 import requests
 from pathlib import Path
+import os
 
 class Editorcontroller:
     def __init__(self):
@@ -41,6 +42,10 @@ class Editorcontroller:
         self.currentIndex=0
         self.itemList:Item=[]
         self.types=[]
+        filename=self.checkFilename()
+       
+            
+        
         with open(self.filename, "r") as f:
             json_object = json.load(f)
         for key,value in json_object['config'].items():                             # save attribut types in list
@@ -223,5 +228,8 @@ class Editorcontroller:
                 self.currentIndex=items
                 self.updateView()
         
-
-
+    def checkFilename(self):
+        if not ((Path(self.filename)).is_file()):
+            dir = os.path.join('assets', 'editor')
+            os.chdir(dir)
+       
