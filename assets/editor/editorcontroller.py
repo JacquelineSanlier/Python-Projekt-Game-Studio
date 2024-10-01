@@ -16,6 +16,7 @@ class Editorcontroller:
         self.filename:str=""
         self.itemsPerRow=30
         self.itemsColumn=3
+        self.reverse=False
     
     def setGui(self,gui):
         self.gui=gui
@@ -91,8 +92,7 @@ class Editorcontroller:
         self.currentIndex-=1
         if self.currentIndex<0 : self.currentIndex=len(self.itemList)-1
         self.updateView()
-        self.sortBy("damage")
-        self.printItemList()
+        
         
     
     def showNext(self):
@@ -193,6 +193,8 @@ class Editorcontroller:
                 setattr(self.itemList[self.currentIndex],key,value)
                 index+=1          
         self.gui.printStatus(msg)
+        self.getDict()
+        self.printItemList()
         
     def getType(self):
         if self.filename=="items.json": return ("items")
@@ -207,7 +209,11 @@ class Editorcontroller:
             self.items.append(dic)
 
     def sortBy(self,key:str):
-        self.items=sorted(self.items, key=lambda x: x[key])
+        self.reverse=not self.reverse
+        
+        self.items=sorted(self.items, key=lambda x: x[key],reverse=self.reverse)
+        print(key)
+        self.printItemList()
         
 
     def printItemList(self):
@@ -224,7 +230,6 @@ class Editorcontroller:
     def processClickedItem(self,id:str):
         for items in range(0,len(self.itemList)):
             if getattr(self.itemList[items],"id")==int(id):
-                print(id)
                 self.currentIndex=items
                 self.updateView()
         

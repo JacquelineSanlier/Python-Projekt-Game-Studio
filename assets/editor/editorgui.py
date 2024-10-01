@@ -149,8 +149,8 @@ class Editorgui:
         self.table.configure(yscroll=scrollbar.set)
         scrollbar.grid(row=0, column=1, sticky='e')
         for col in columns:
-            self.table.heading(col, text=col)
-            self.table.column(col,width=columnWidth)
+            self.table.heading(col, text=col,command=lambda col=col: self.Editorcontroller.sortBy(col),anchor="center")
+            self.table.column(col,width=columnWidth,anchor="center")
         self.table.pack(fill='both', expand=True)                                                   # table fills parent frame
         self.table.bind("<<TreeviewSelect>>", self.rowSelected)
     
