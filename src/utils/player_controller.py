@@ -10,7 +10,7 @@ class Player:
         self.rect = pygame.Rect(_x_init, _y_init, 50, 50) # square for the player (x, y, width, height)
         self.speed = _speed_init # movementspeed
 
-    def move(self,keys):
+    def move(self, keys, walls):
         #moves the player based on the pressed key
         dx = 0
         dy = 0
@@ -30,10 +30,21 @@ class Player:
             dx *= math.sqrt(0.5)
             dy *= math.sqrt(0.5)
 
-        # refresh the player position
+        # calculate new position
+        new_rect = self.rect.move(dx, dy)    
 
-        self.rect.x += dx
-        self.rect.y += dy
+
+        # collisioncheck for walls
+        if not self.check_collision(new_rect, walls):
+            # if no collision, move player
+            self.rect = new_rect
+
+    def check_collision(self, new_rect, walls):
+        # checks if new position hits a wall
+        for wall in walls:
+            if new_rect.colliderect(wall):
+                return True
+        return False                
 
     def draw(self, surface):
         # draws the player as rectangle

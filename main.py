@@ -27,6 +27,7 @@ FPS = 60
 
 # color
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
 # placeholder Creatures to have something to calculate
 creature_1 = CreatureBase(1, 'Goblin', 30, 3, 50)
@@ -38,6 +39,12 @@ start_time = None       # tracking time elapsed (for drawing combat text over x 
 # create player and controller
 player = Player(400, 300, 5) # player object with start position and speed
 controller = Controller() #controller for input
+
+walls = [
+    pygame.Rect(100, 100, 200, 50), # wall 1 (x, y, width, height)
+    pygame.Rect(500, 300, 100, 200), # wall 2
+    pygame.Rect(800, 100, 150, 150) # wall 3
+]
 
 is_running = True       #This keeps the game window open
 while is_running:
@@ -58,10 +65,16 @@ while is_running:
     controller.handle_input()
 
     # move the player
-    player.move(controller.keys)
+    player.move(controller.keys, walls)
  
-    # fill the screen and move player
+    # fill the screen
     display.fill(WHITE)
+
+    # draw walls
+    for wall in walls:
+        pygame.draw.rect(display, BLACK, wall)
+
+    # moves player
     player.draw(display)
 
     #render ui after player logic always
