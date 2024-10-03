@@ -1,7 +1,7 @@
 import pygame
 from src.objs.creature import CreatureBase                    # This imports the player and item modules from the src.objs package.
 #from src.objs import item                       # This imports the player and item modules from the src.objs package.
-from src.utils.damage_calc import calculate_damage               # This imports the damage_calc module from the src.utils package
+from src.utils.damage_calc import calculate_damage, display_combat_log               # This imports the damage_calc module from the src.utils package
 from src.utils.player_controller import Player, Controller         # This imports the player_controller module from src.utils package 
 from src.utils.ui import WindowBase, TextBase
 
@@ -35,6 +35,8 @@ creature_2 = CreatureBase(1, 'Orc', 50, 5, 50)
 
 text_surface = None     # Combat Text placeholder
 start_time = None       # tracking time elapsed (for drawing combat text over x frames)
+combat_log_display_time = 0 # combat log blit timer
+combat_log = []         # combat log initialization
 
 # create player and controller
 player = Player(400, 300, 5) # player object with start position and speed
@@ -58,7 +60,9 @@ while is_running:
             if event.key == pygame.K_ESCAPE:
                 is_running = False
             if event.key == pygame.K_e:                                              # run combat text once e is pressed / test
-                text_surface, start_time = calculate_damage(creature_1, creature_2)   # creatures are currently dummies
+                text_surface, start_time = calculate_damage(creature_1, creature_2, combat_log)   # creatures are currently dummies
+            if event.key == pygame.K_i:
+                combat_log_display_time = current_time + 5000
 
     
     # get input
@@ -83,8 +87,12 @@ while is_running:
     texttest.update()
 
     # combat text screen
-    if text_surface and start_time and current_time - start_time < 1000:
-        display.blit(text_surface, ((width // 2) - 100, (height // 2) + 200))
+    if text_surface and start_time and current_time - start_time < 1250:
+        display.blit(text_surface, ((int(width * 0.421875)), (int(height * 0.7777778))))
+
+        # combat log screen
+    if current_time < combat_log_display_time:
+        display_combat_log(display, combat_log, width, height)
 
     # refresh screen
     pygame.display.flip()
