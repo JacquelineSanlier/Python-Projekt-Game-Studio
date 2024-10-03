@@ -4,12 +4,6 @@ import pygame.font
 
 from src.objs.creature import CreatureBase
 
-import pygame.font
-
-# very basic damage calc, just health - damage for now
-
-from src.objs.creature import CreatureBase
-
 def calculate_damage(attacker: CreatureBase, defender: CreatureBase, combat_log: list):
     start_time = pygame.time.get_ticks()
 
