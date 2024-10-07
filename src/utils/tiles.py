@@ -482,19 +482,21 @@ class screen_tile:
         offset_y=self._parent._offset_y
         x=(self._x - offset_x) * self._scale
         y=(self._y - offset_y) * self._scale
-        w=self._width
-        h=self._height
+        w=self._width * self._scale
+        h=self._height * self._scale
         
         image=self._tile._image
         image=self._pygame.transform.scale(image, (w, h))
+        screen=self._screen
         
         rot=self._startrotation #in grad
         if rot:
-            image=self._pygame.transform.rotate(image, rot)
-        
-        #rotated_image = pygame.transform.rotate(image, 45)
-        screen=self._screen
-        screen.blit(image, (x, y)) 
+            rotated_image=self._pygame.transform.rotate(image, rot)
+            image_rect= rotated_image.get_rect(center=image.get_rect(topleft=(x, y)).center)
+            screen.blit(rotated_image, image_rect) 
+        else:
+            #rotated_image = pygame.transform.rotate(image, 45)
+            screen.blit(image, (x, y)) 
 
 
 
