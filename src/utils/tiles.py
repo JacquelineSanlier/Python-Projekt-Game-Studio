@@ -147,6 +147,11 @@ class screen:
     _offset_y=100   #Position of Map area
     xd=0            #moving Direction x 
     yd=0            #movinf Direction y
+    # scale:float=1   #Global user scale
+
+    _player={}              #Used Player Items
+    _player_item_id:int =0  #Numer of the Item the Player is displayed
+
 
     def __init__(self,pygame,screen):
         self._pygame  = pygame
@@ -156,7 +161,38 @@ class screen:
     #Global Unique Entities/Tiles
     def setTiles(self,tiles):
         self._tile_list=tile_list(self._pygame)
-        self._tile_list.addItems(tiles)    
+        self._tile_list.addItems(tiles)
+    
+    #
+    # PRIVATE
+    # 
+    # creates an item to append on screen or player
+    #
+    # SYNTAX
+    #   myscreen.add("Tree",100,150,64,64)
+    #   myscreen.add("Grass",300,250)
+    #
+    # Parameters:
+    #   name    = not uniqe the name of the Item
+    #   x       = x - position of the item
+    #   y       = y - position of the item
+    #   width   = x - optional new With   instead of the original 
+    #   height  = x - optional new height instead of the orioginal
+    #
+    def _createItem(self,name,x,y,width=None,height=None,rotation=None):
+        tile=self._tile_list.getItem(name)
+
+        item=screen_tile(self,tile)
+        #item=screen_tile(self._pygame, self._screen, self, self._id, tile)
+        item.setPosition(x,y)
+
+        if (width and height):
+            item.setSize(width,height)
+
+        if(rotation):
+            item.setRotation(rotation)
+
+        return item
     
 
     #
@@ -177,44 +213,9 @@ class screen:
     #
     def add(self,name,x,y,width=None,height=None,rotation=None):
         self._id+=1
-        tile=self._tile_list.getItem(name)
-
-        item=screen_tile(self,tile)
-        #item=screen_tile(self._pygame, self._screen, self, self._id, tile)
-        item.setPosition(x,y)
-
-        if (width and height):
-            item.setSize(width,height)
-
-        if(rotation):
-            item.setRotation(rotation)
-
-        self._item_list[self._id]=item    
-        return item
+        self._item_list[self._id]=self._createItem(name,x,y,width,height,rotation)    
+        return self._item_list[self._id]
     
-    #
-    # PUBLIC
-    # 
-    # SYNTAX
-    #   myscreen.addItems(dictionary)
-    #
-    # Parameters of the array:
-    #   name    = not uniqe the name of the Item
-    #   x       = x - position of the item
-    #   y       = y - position of the item
-    #   width   = x - optional new With   instead of the original 
-    #   height  = x - optional new height instead of the orioginal
-    #   infollowing format:
-    #   dictionary = [
-    #       ["Tree" ,100,100],
-    #       ["Road" ,100,200,64,64],
-    #       ["Grass",100,300,128,128]
-    #   ]
-    #
-    def addItems(self,items):
-        for item in items:
-            self.addItem(item)
-
     #
     # PUBLIC
     # 
@@ -244,6 +245,37 @@ class screen:
     # PUBLIC
     # 
     # SYNTAX
+    #   myscreen.addItems(dictionary)
+    #
+    # Parameters of the array:
+    #   name    = not uniqe the name of the Item
+    #   x       = x - position of the item
+    #   y       = y - position of the item
+    #   width   = x - optional new With   instead of the original 
+    #   height  = x - optional new height instead of the orioginal
+    #   infollowing format:
+    #   dictionary = [
+    #       ["Tree" ,100,100],
+    #       ["Road" ,100,200,64,64],
+    #       ["Grass",100,300,128,128]
+    #   ]
+    #
+    def addItems(self,items):
+        for item in items:
+            self.addItem(item)
+
+
+    def addPlayer(self,items):
+        for item in items:
+            item.append(5-len(item))
+            self._player_item_id+=1
+            self._player[self._player_item_id]=self._createItem(item[0],item[1],item[2],item[3],item[4],item[5])
+
+
+    #
+    # PUBLIC
+    # 
+    # SYNTAX
     #   item=myscreen.getItem(index)
     #
     # PARAMETERS:
@@ -267,11 +299,33 @@ class screen:
     def update(self):
         for item in self._item_list.values():
             self.move()
-            item.update()  
+            item.update()
+
+        for item in self._player.values():
+            #self.move()
+            item.update_player()
+
 
     def move(self):
         self._offset_x+=self.xd
         self._offset_y+=self.yd
+    
+    def setDev(self,dev=True):
+        for item in self._item_list.values():
+            item._dev=dev
+
+    def toggleDev(self):
+        for item in self._item_list.values():
+            item._dev=not item._dev
+
+    def setScale(self,scale):
+        for item in self._item_list.values():
+            item._scale=scale
+
+    def adjustScale(self,scale):
+        for item in self._item_list.values():
+            item._scale=item._scale*scale
+
 
 
 # Tile = Item auf dem Bildschirm , Entity = Interagierendes Item
@@ -292,6 +346,7 @@ class screen_tile:
     _scale:float = 1          #Scale Factor
     _startrotation:int = 0    #Rotation          
     _tile=None                #has the src of the Image
+    _dev=False                #Develper Mode
 
     _dx:int =0				  #movement per 1/60s  -1 left +1 right 0 no move
     _dy:int =0                #movement per 1/60s  -1 up   +1 down  0 no move
@@ -475,16 +530,7 @@ class screen_tile:
         h=self._hitbox_height * self._scale
         self.rotateRect(x,y,w,h,self.__RED,self._startrotation)
 
-    def _draw_image(self):
-        if (self._tile._image == None):
-            return
-        offset_x=self._parent._offset_x
-        offset_y=self._parent._offset_y
-        x=(self._x - offset_x) * self._scale
-        y=(self._y - offset_y) * self._scale
-        w=self._width * self._scale
-        h=self._height * self._scale
-        
+    def _draw_onscreen(self,x,y,w,h):
         image=self._tile._image
         image=self._pygame.transform.scale(image, (w, h))
         screen=self._screen
@@ -499,12 +545,39 @@ class screen_tile:
             screen.blit(image, (x, y)) 
 
 
+    def _draw_image(self):
+        if (self._tile._image == None):
+            return
+        offset_x=self._parent._offset_x
+        offset_y=self._parent._offset_y 
+        x=(self._x - offset_x) * self._scale  + self._screen.get_width()/2
+        y=(self._y - offset_y) * self._scale + self._screen.get_height()/2
+
+        # x=(self._x * self._scale - offset_x) 
+        # y=(self._y * self._scale - offset_y) 
+        
+        w=self._width * self._scale
+        h=self._height * self._scale
+        
+        self._draw_onscreen(x,y,w,h)
+
+
+    def update_player(self):
+        w=self._width * self._scale
+        h=self._height * self._scale
+        x=self._screen.get_width() / 2 - w / 2
+        y=self._screen.get_height() / 2 - h / 2
+        self._draw_onscreen(x,y,w,h)
+
+
 
     def update(self):
         #print("Update")
         self._draw_image()
-        self._draw_rect()
-        self._draw_hitbox()
+        if (self._dev):
+            self._draw_rect()
+            self._draw_hitbox()
+        
         #print (screen._offset_x)
         #print (self._parent._offset_x)
 
