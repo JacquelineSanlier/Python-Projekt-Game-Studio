@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Background (mortar) -->
+  <rect width="64" height="64" fill="#8B8680"/>
+
+  <!-- First row of stones -->
+  <rect x="2" y="2" width="28" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Full stone, dark red -->
+  <rect x="34" y="2" width="28" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Full stone, dark red -->
+
+  <!-- Second row of stones (staggered) with half-stones flush to edges, rounded outer edges -->
+  <rect x="0" y="18" width="14" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Left flush half-stone, rounded on right -->
+  <rect x="18" y="18" width="28" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Full stone, dark red -->
+  <rect x="50" y="18" width="14" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Right flush half-stone, rounded on left -->
+
+  <!-- Third row of stones -->
+  <rect x="2" y="34" width="28" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Full stone, dark red -->
+  <rect x="34" y="34" width="28" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Full stone, dark red -->
+
+  <!-- Fourth row of stones (staggered) with half-stones flush to edges, rounded outer edges -->
+  <rect x="0" y="50" width="14" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Left flush half-stone, rounded on right -->
+  <rect x="18" y="50" width="28" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Full stone, dark red -->
+  <rect x="50" y="50" width="14" height="12" rx="4" ry="4" fill="#8B0000"/> <!-- Right flush half-stone, rounded on left -->
+
+  <!-- remove rounds on border  -->
+  <rect  x="0" y="18" width="4" height="12" rx="0" ry="0" fill="#8B0000"/> <!-- Left flush half-stone, rounded on right -->
+  <rect x="60" y="18" width="4" height="12" rx="0" ry="0" fill="#8B0000"/> <!-- Left flush half-stone, rounded on right -->
+
+  <rect  x="0" y="50" width="4" height="12" rx="0" ry="0" fill="#8B0000"/> <!-- Left flush half-stone, rounded on right -->
+  <rect x="60" y="50" width="4" height="12" rx="0" ry="0" fill="#8B0000"/> <!-- Right flush half-stone, rounded on left -->
+</svg>
