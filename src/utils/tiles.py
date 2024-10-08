@@ -187,6 +187,7 @@ class screen:
         item.setPosition(x,y)
 
         if (width and height):
+            # item.resizeHitbox(width,height)
             item.setSize(width,height)
 
         if(rotation):
@@ -321,9 +322,13 @@ class screen:
     def setScale(self,scale):
         for item in self._item_list.values():
             item._scale=scale
+        for item in self._player.values():
+            item._scale=scale
 
     def adjustScale(self,scale):
         for item in self._item_list.values():
+            item._scale=item._scale*scale
+        for item in self._player.values():
             item._scale=item._scale*scale
 
 
@@ -391,7 +396,7 @@ class screen_tile:
         self._screen=parent._screen
 
         if (tile):
-            self.setSize(tile._width, tile._height)
+            self._setSizeStart(tile._width, tile._height)
 
     def setId(self,id):
         self._id=id
@@ -407,75 +412,106 @@ class screen_tile:
         if (self._hitbox_y == None):
             self._hitbox_y=0
 
-    def _storeOriginalSize(self):
-        if self._tile:
-            if self._original_width == None:
-                self._original_width=self._tile._width
-            if self._original_height == None:
-                self._original_height=self._tile._height
-        if self._original_width == None:
-            self._original_width=self._width
-        if self._original_height == None:
-            self._original_height=self._height
+    # def _storeOriginalSize(self):
+    #     if self._tile:
+    #         if self._original_width == None:
+    #             self._original_width=self._tile._width
+    #         if self._original_height == None:
+    #             self._original_height=self._tile._height
+    #     if self._original_width == None:
+    #         self._original_width=self._width
+    #     if self._original_height == None:
+    #         self._original_height=self._height
 
-    def _storeOriginalHitbox(self):
-        if self._tile:
-            if self._original_hitbox_width == None:
-                self._original_hitbox_width=self._tile._hitbox_width
-            if self._original_hitbox_height == None:
-                self._original_hitbox_height=self._tile._hitbox_height
-            if self._original_hitbox_x == None:
-                self._original_hitbox_x=self._tile._hitbox_x
-            if self._original_hitbox_y == None:
-                self._original_hitbox_y=self._tile._hitbox_y
+    # def _storeOriginalHitbox(self):
+    #     if self._tile:
+    #         if self._original_hitbox_width == None:
+    #             self._original_hitbox_width=self._tile._hitbox_width
+    #         if self._original_hitbox_height == None:
+    #             self._original_hitbox_height=self._tile._hitbox_height
+    #         if self._original_hitbox_x == None:
+    #             self._original_hitbox_x=self._tile._hitbox_x
+    #         if self._original_hitbox_y == None:
+    #             self._original_hitbox_y=self._tile._hitbox_y
 
-        if self._original_hitbox_width == None:
-            self._original_hitbox_width=self._hitbox_width
-        if self._original_hitbox_height == None:
-            self._original_hitbox_height=self._hitbox_height
-        if self._original_hitbox_x == None:
-            self._original_hitbox_x=self._tile._hitbox_x
-        if self._original_hitbox_y == None:
-            self._original_hitbox_y=self._tile._hitbox_y
+    #     if self._original_hitbox_width == None:
+    #         self._original_hitbox_width=self._hitbox_width
+    #     if self._original_hitbox_height == None:
+    #         self._original_hitbox_height=self._hitbox_height
+    #     if self._original_hitbox_x == None:
+    #         self._original_hitbox_x=self._tile._hitbox_x
+    #     if self._original_hitbox_y == None:
+    #         self._original_hitbox_y=self._tile._hitbox_y
+
+    def _setSizeStart(self,width,height):
+        self._width=self._tile._width
+        self._height=self._tile._height
+        self._hitbox_width=self._tile._hitbox_width
+        self._hitbox_height=self._tile._hitbox_height
+        self._hitbox_x=self._tile._hitbox_x
+        self._hitbox_y=self._tile._hitbox_y
+
+        self._resize(width,height)
+        self._toOriginal()
+
+    def _resize(self,width,height):
+        self._hitbox_width  *=  (width/self._width)
+        self._hitbox_height *=  (height/self._height)
+        self._hitbox_x      *=  (width/self._width)
+        self._hitbox_y      *=  (height/self._height)        
+        self._width=width
+        self._height=height
+
+    def _toOriginal(self):
+        self._original_width=self._width
+        self._original_height=self._height
+        self._original_hitbox_width=self._width
+        self._original_hitbox_height=self._height
+        self._original_hitbox_x=self._hitbox_x
+        self._original_hitbox_y=self._hitbox_y
+        
+
 
     def setSize(self,width,height):
         #w=self._width
         #h=self._height
 
     
-        self._width=width
-        self._height=height
-
-        self._storeOriginalSize()
-        self.resizeHitbox(width,height)
+        #self._width=width
+        #self._height=height
+        #self._storeOriginalSize()
+        #self.resizeHitbox(width,height)
+        self._resize(width,height)
 
     
     #resize Hitbox from w,h to width height
     # 2 Angaben nur die Neue
-    def resizeHitbox(self,width,height):
-        if (self._hitbox_width == None):
-            self.setHitbox(self._x,self._y,self._width,self._height)
-        if self._width == 0 or self._height == 0:
-            return
+    #def resizeHitbox(self,width,height):
+    #    if (self._hitbox_width == None):
+    #        self.setHitbox(self._x,self._y,self._width,self._height)
+    #    if self._width == 0 or self._height == 0:
+    #        return
 
-        self._hitbox_width   =self._original_hitbox_width*width/self._width
-        self._hitbox_height  =self._original_hitbox_height*height/self._height
-        self._hitbox_x       =self._original_hitbox_x*width/self._width
-        self._hitbox_y       =self._original_hitbox_y*height/self._height
+    #    self._hitbox_width   =self._original_hitbox_width*width/self._width
+    #    self._hitbox_height  =self._original_hitbox_height*height/self._height
+    #    self._hitbox_x       =self._original_hitbox_x*width/self._width
+    #    self._hitbox_y       =self._original_hitbox_y*height/self._height
 
     def setHitbox(self,x,y,width,height):
         self._hitbox_x=x
         self._hitbox_y=y
         self._hitbox_width=width
         self._hitbox_height=height
-        self._storeOriginalHitbox()
+        self._toOriginal()
+
+        # self._storeOriginalHitbox()
 
     def setScale(self,scale):
         self._scale=scale
 
     def setMove(self,dx,dy):
-        self._dx=dx*self._speed
-        self._dy=dy*self._speed
+        self._dx=dx
+        self._dy=dy
 
     def setSpeed(self,speed=1):
         self._speed=speed
@@ -489,8 +525,8 @@ class screen_tile:
     def move(self,x,y):
 	    #remove old from screen or show animation
         #move the tile
-        self._x+=(self._dx * self._speed)
-        self._y+=(self._dx * self._speed)        
+        self._x+=(self._dx * self._speed * self._scale)
+        self._y+=(self._dx * self._speed * self._scale)        
 
     def remove():
         pass
@@ -506,6 +542,7 @@ class screen_tile:
         pygame=self._pygame
         rect_surface = pygame.Surface((w, h), pygame.SRCALPHA)
         pygame.draw.rect(rect_surface, color, (0, 0, w, h), 2)
+        
         rotated_rect = pygame.transform.rotate(rect_surface, rot)
         rect = rotated_rect.get_rect(center=(x + w // 2, y + h // 2))
         screen=self._screen
@@ -514,8 +551,8 @@ class screen_tile:
     def _draw_rect(self):
         offset_x=self._parent._offset_x
         offset_y=self._parent._offset_y
-        x=(self._x - offset_x) * self._scale
-        y=(self._y - offset_y) * self._scale
+        x=(self._x - offset_x) * self._scale + self._screen.get_width()/2
+        y=(self._y - offset_y) * self._scale + self._screen.get_height()/2
         w=self._width * self._scale
         h=self._height * self._scale
         self.rotateRect(x,y,w,h,self.__BLUE,self._startrotation)
@@ -524,8 +561,8 @@ class screen_tile:
     def _draw_hitbox(self):
         offset_x=self._parent._offset_x
         offset_y=self._parent._offset_y
-        x=(self._x+self._hitbox_x - offset_x) * self._scale
-        y=(self._y+self._hitbox_y - offset_y) * self._scale
+        x=(self._x+self._hitbox_x - offset_x) * self._scale + self._screen.get_width()/2
+        y=(self._y+self._hitbox_y - offset_y) * self._scale + self._screen.get_height()/2
         w=self._hitbox_width * self._scale
         h=self._hitbox_height * self._scale
         self.rotateRect(x,y,w,h,self.__RED,self._startrotation)
@@ -568,6 +605,9 @@ class screen_tile:
         x=self._screen.get_width() / 2 - w / 2
         y=self._screen.get_height() / 2 - h / 2
         self._draw_onscreen(x,y,w,h)
+        if (self._dev):
+            self._draw_rect()
+            self._draw_hitbox()
 
 
 
